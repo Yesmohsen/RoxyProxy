@@ -1,0 +1,28 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build extension zip
+        run: |
+          TAG=${GITHUB_REF_NAME}
+          zip -r "roxyproxy-${TAG}.zip" \
+            manifest.json \
+            background/ \
+            icons/ \
+            popup/ \
+            README.md
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: roxyproxy-*.zip
+          generate_release_notes: true
