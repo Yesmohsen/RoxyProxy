@@ -457,7 +457,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         case 'addBypassWildcard': {
           const url = message.url
           const domain = extractDomain(url)
-          const wildcard = `*.${domain.startsWith('www.') ? domain.substring(4) : domain}`
+          const parts = domain.split('.')
+          const rootDomain = parts.length > 2 ? parts.slice(-2).join('.') : domain
+          const wildcard = `*.${rootDomain}`
           if (!state.bypassList.includes(wildcard)) {
             const bypassList = [...state.bypassList, wildcard]
             await setState({ bypassList })
