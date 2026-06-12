@@ -289,6 +289,7 @@ function renderBackupForm() {
 
 function showPanel(panelId) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'))
+  document.querySelectorAll('.action-btn').forEach(b => b.classList.remove('active'))
   if (activePanel === panelId) {
     activePanel = null
     return
@@ -556,11 +557,33 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  document.getElementById('addBypassBtn').addEventListener('click', () => addCurrentTabBypass(false))
-  document.getElementById('addWildcardBtn').addEventListener('click', () => addCurrentTabBypass(true))
+  document.getElementById('addBypassBtn').addEventListener('click', async (e) => {
+    const btn = e.currentTarget
+    await addCurrentTabBypass(false)
+    if (document.getElementById('bypassPanel').classList.contains('active')) {
+      btn.classList.add('active')
+    }
+  })
+  document.getElementById('addWildcardBtn').addEventListener('click', async (e) => {
+    const btn = e.currentTarget
+    await addCurrentTabBypass(true)
+    if (document.getElementById('bypassPanel').classList.contains('active')) {
+      btn.classList.add('active')
+    }
+  })
 
-  document.getElementById('logsBtn').addEventListener('click', () => showPanel('logsPanel'))
-  document.getElementById('backupBtn').addEventListener('click', () => showPanel('backupPanel'))
+  document.getElementById('logsBtn').addEventListener('click', (e) => {
+    showPanel('logsPanel')
+    if (document.getElementById('logsPanel').classList.contains('active')) {
+      e.currentTarget.classList.add('active')
+    }
+  })
+  document.getElementById('backupBtn').addEventListener('click', (e) => {
+    showPanel('backupPanel')
+    if (document.getElementById('backupPanel').classList.contains('active')) {
+      e.currentTarget.classList.add('active')
+    }
+  })
 
   document.getElementById('clearLogsBtn').addEventListener('click', async () => {
     try {
