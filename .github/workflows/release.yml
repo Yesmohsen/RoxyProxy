@@ -25,8 +25,17 @@ jobs:
             LICENSE \
             README.md
 
+      - name: Generate release notes
+        run: |
+          PREV_TAG=$(git tag --sort=-version:refname | head -n 2 | tail -n 1)
+          {
+            echo "## Changes in ${GITHUB_REF_NAME}"
+            echo ""
+            git log --oneline --no-decorate ${PREV_TAG}..HEAD 2>/dev/null || echo "Initial release"
+          } > release_notes.md
+
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
           files: roxyproxy-*.zip
-          generate_release_notes: true
+          body_path: release_notes.md
