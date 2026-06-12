@@ -27,15 +27,19 @@ jobs:
 
       - name: Generate release notes
         run: |
-          PREV_TAG=$(git tag --sort=-version:refname | head -n 2 | tail -n 1)
-          {
-            echo "## Changes in ${GITHUB_REF_NAME}"
-            echo ""
-            git log --oneline --no-decorate ${PREV_TAG}..HEAD 2>/dev/null || echo "Initial release"
-          } > release_notes.md
+          if [ -f RELEASE_NOTES.md ]; then
+            cp RELEASE_NOTES.md body.md
+          else
+            PREV_TAG=$(git tag --sort=-version:refname | head -n 2 | tail -n 1)
+            {
+              echo "## Changes in ${GITHUB_REF_NAME}"
+              echo ""
+              git log --oneline --no-decorate ${PREV_TAG}..HEAD 2>/dev/null || echo "Initial release"
+            } > body.md
+          fi
 
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
           files: roxyproxy-*.zip
-          body_path: release_notes.md
+          body_path: body.md
